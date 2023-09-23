@@ -1,0 +1,57 @@
+\name{adja_gnp}
+\alias{adja_gnp}
+\title{
+Generation of a network from the Erdos-Renyi model
+}
+
+\description{
+This function generates a network from the Erdos-Renyi model.
+}
+
+\usage{
+adja_gnp(N, alpha, directed = FALSE)
+}
+
+\arguments{
+\item{N}{
+The number of nodes on the network.
+}
+\item{alpha}{
+The network density. A value in \eqn{[0,1]} defining the frequency of
+connections in the network.
+}
+\item{directed}{
+Logical scalar, whether to generate a directed network. If TRUE a directed
+network is generated.
+}
+}
+
+\details{
+For each couple of nodes it performs a Bernoulli trial with values 1 "draw an edge", 0 "otherwise".
+Each trial has the same probability of having an edge; this is equal to \eqn{\alpha*N^{-0.3}}, specified based on the number of nodes on the network \eqn{N} and the network density \code{alpha}.
+}
+
+\value{
+A row-normalized non-negative matrix describing the network. The main diagonal
+entries of the matrix are zeros, all the other entries are non-negative and the
+maximum sum of elements over the rows equals one.
+}
+
+\references{
+Erdos, P. and A. Renyi (1959). On random graphs.
+\emph{Publicationes Mathematicae}, 6, 290-297.
+}
+
+\author{
+Mirko Armillotta, Michail Tsagris and Konstantinos Fokianos.
+}
+
+\seealso{
+\code{\link{adja}}
+}
+
+\examples{
+W <- adja_gnp(N = 20, alpha= 0.1)
+}
+
+

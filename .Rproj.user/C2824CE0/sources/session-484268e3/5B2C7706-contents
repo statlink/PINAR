@@ -1,0 +1,9 @@
+W <- adja( N = 20, K = 5, alpha= 0.5)
+set.seed(1234)
+y <- poisson.MODpq( b = c(0.5, 0.3, 0.2), W = W, p = 1, Z = NULL,
+                    TT = 1000, N = 20, copula = "gaussian",
+                    corrtype = "equicorrelation", rho = 0.5)$y
+set.seed(1234)
+y1 <- poisson.MODpq( b = c(0.5, 0.3, 0.2), W = W, p = 1, Z = NULL,
+                    TT = 1000, N = 20, copula = "gaussian",
+                    corrtype = "equicorrelation", rho = 0.5)$y

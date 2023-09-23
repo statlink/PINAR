@@ -1,0 +1,155 @@
+\name{score_test_tnarpq_j}
+\alias{score_test_tnarpq_j}
+
+\title{
+Bootstrap test for threshold effects on PNAR(p) model
+}
+
+\description{
+Computation of bootstrap p-value for the sup-type test for testing linearity of
+Poisson Network Autoregressive model of order \eqn{p} (PNAR(\eqn{p})) versus the
+non-linear Threshold alternative (T-PNAR(\eqn{p})).
+}
+
+\usage{
+score_test_tnarpq_j(supLM, b, y, W, p, d, Z = NULL, J = 499,
+gama_L = NULL, gama_U = NULL, tol = 1e-9, ncores = 1, seed = NULL)
+}
+
+\arguments{
+\item{supLM}{
+The optimized value of the test statistic. See the function
+\code{\link{global_optimise_LM_tnarpq}}.
+}
+\item{b}{
+The estimated parameters from the linear model, in the following order:
+(intercept, network parameters, autoregressive parameters, covariates).
+The dimension of the vector should be \eqn{2p + 1 + q}, where \eqn{q} denotes the number of covariates.
+}
+\item{y}{
+A \eqn{TT \times N} time series object or a \eqn{TT \times N} numerical matrix with the \eqn{N} multivariate count time series over \eqn{TT} time periods.
+}
+\item{W}{
+The \eqn{N \times N} row-normalized non-negative adjacency matrix describing
+the network. The main diagonal entries of the matrix should be zeros,
+all the other entries should be non-negative and the maximum sum of elements
+over the rows should equal one. The function row-normalizes the matrix if a
+non-normalized adjacency matrix is provided.
+}
+\item{p}{
+The number of lags in the model.
+}
+\item{d}{
+The lag parameter of non-linear variable (should be between 1 and \eqn{p}).
+}
+\item{Z}{
+An \eqn{N \times q} matrix of covariates (one for each column), where \eqn{q}
+is the number of covariates in the model. Note that they must be non-negative.
+}
+\item{J}{
+The number of bootstrap samples to draw.
+}
+\item{gama_L}{
+The lower value of the nuisance parameter \eqn{\gamma} to consider.
+Use NULL if there is not information about its value.
+See the details for default computation.
+}
+\item{gama_U}{
+The upper value of the nuisance parameter \eqn{\gamma} to consider.
+Use NULL if there is not information about its value.
+See the details for default computation.
+}
+\item{tol}{
+Tolerance level for the optimizer.
+}
+\item{ncores}{
+Number of cores to use for parallel computing. By default the number of
+cores is set to 1 (no parallel computing). \bold{Note:} If for some reason the
+parallel does not work then load the doParallel package yourseleves.
+}
+\item{seed}{
+To replicate the results use a seed for the generator, an integer number.
+}
+}
+
+\details{
+The function computes a bootstrap p-value for the sup-type test for testing linearity of Poisson Network Autoregressive model of order \eqn{p} (PNAR(\eqn{p})) versus the following Threshold alternative (T-PNAR(\eqn{p})). For each node of the network \eqn{i=1,...,N} over the time sample \eqn{t=1,...,TT}
+\deqn{
+\lambda_{i,t}=\beta_{0}+\sum_{h=1}^{p}\left(\beta_{1h}X_{i,t-h}+\beta_{2h}Y_{i,t-h}+(\alpha_{0}+\alpha_{1h}X_{i,t-h}+\alpha_{2h}Y_{i,t-h})I(X_{i,t-d}\leq\gamma)\right)+\sum_{l=1}^{q}\delta_{l}Z_{i,l}
+}
+where \eqn{X_{i,t}=\sum_{j=1}^{N}W_{ij}Y_{j,t}} is the network effect, i.e. the weighted average impact of node \eqn{i} connections, with the weights of the mean being \eqn{W_{ij}}, the single element of the network matrix \eqn{W}. The sequence \eqn{\lambda_{i,t}} is the expectation of \eqn{Y_{i,t}}, conditional to its past values.
+
+The null hypothesis of the test is defined as \eqn{H_{0}: \alpha_{0}=\alpha_{11}=...=\alpha_{2p}=0}, versus the alternative that at least one among \eqn{\alpha_{s,h}} is not \eqn{0}, for \eqn{s=0,1,2}. The test statistic has the form
+\deqn{
+LM(\gamma)=S^{'}(\hat{\theta},\gamma)\Sigma^{-1}(\hat{\theta},\gamma)S(\hat{\theta},\gamma)
+}
+where
+\deqn{
+S(\hat{\theta}, \gamma)=\sum_{t=1}^{TT}\sum_{i=1}^{N}\left(\frac{Y_{i,t}}{\lambda_{i,t}(\hat{\theta}, \gamma)}-1\right)\frac{\partial\lambda_{i,t}(\hat{\theta},\gamma)}{\partial\alpha}
+}
+is the partition of the quasi score related to the vector of non-linear parameters \eqn{\alpha=(\alpha_{0},...,\alpha_{2p})}, evaluated at the estimated parameters \eqn{\hat{\theta}} under the null assumption \eqn{H_{0}} (linear model), and \eqn{\Sigma(\hat{\theta},\gamma)} is the variance of \eqn{S(\hat{\theta},\gamma)}.
+
+Since the test statistic depends on an unknown nuisance parameter (\eqn{\gamma}), the supremum of the statistic is considered in the test, \eqn{\sup_{\gamma}LM(\gamma)}. This value can be computed for the available sample by using the function \code{\link{global_optimise_LM_tnarpq}} and should be supplied here as an input \code{supLM}.
+
+The function performs the bootstrap resampling of the test statistic \eqn{\sup_{\gamma}LM(\gamma)} by employing Gaussian perturbations of the score \eqn{S(\hat{\theta},\gamma)}. For details see Armillotta and Fokianos (2022b, Sec. 5).
+
+The values of \code{gama_L} and \code{gama_U} are computed internally as the mean over \eqn{i=1,...,N} of \eqn{20\%} and \eqn{80\%} quantiles of the empirical distribution of the network mean \eqn{X_{i,t}} for \eqn{t=1,...,TT}. In this way the optimization is performed for values of \eqn{\gamma} such that the indicator function \eqn{I(X_{i,t-d}\leq\gamma)} is not always close to 0 or 1. Alternatively, their value can be supplied by the user. For details see Armillotta and Fokianos (2022b, Sec. 4-5).
+
+\bold{Note:} For large datasets the function may require few minutes to run. Parallel computing is suggested to speed up the computations.
+}
+
+\value{
+A list including:
+\item{pJ}{
+The bootstrap p-value of the sup test.
+}
+\item{cpJ}{
+The adjusted version of bootstrap p-value of the sup test.
+}
+\item{gamaj}{
+The optimal values of the \eqn{\gamma} parameter for score test boostrap
+replications.
+}
+\item{supLMj}{
+The values of perturbed test statistic at the optimum point \code{gamaj}.
+}
+}
+
+\references{
+Armillotta, M. and K. Fokianos (2022a). Poisson network autoregression.
+\url{https://arxiv.org/abs/2104.06296}
+
+Armillotta, M. and K. Fokianos (2022b). Testing linearity for network
+autoregressive models.
+\url{https://arxiv.org/abs/2202.03852}
+
+Armillotta, M., Tsagris, M. and Fokianos, K. (2022c). The R-package PNAR
+for modelling count network time series.
+\url{https://arxiv.org/abs/2211.02582}
+}
+
+\author{
+Mirko Armillotta, Michail Tsagris and Konstantinos Fokianos.
+}
+
+\seealso{
+\code{\link{global_optimise_LM_tnarpq},
+\link{global_optimise_LM_stnarpq}, \link{score_test_stnarpq_j}
+}
+}
+
+\examples{
+# load data
+data(crime)
+data(crime_W)
+#estimate linear PNAR model
+mod1 <- lin_estimnarpq(crime, crime_W, p = 2)
+b <- mod1$coefs[, 1]
+\donttest{
+g <- global_optimise_LM_tnarpq(b = b, y = crime, W = crime_W, p = 2, d = 1)
+supg <- g$supLM
+score_test_tnarpq_j(supLM = supg, b = b, y = crime, W = crime_W, p = 2, d = 1, J = 5)
+}
+}
+
+

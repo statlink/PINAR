@@ -1,0 +1,31 @@
+\name{crime}
+\alias{crime}
+\docType{data}
+\title{
+Chicago crime dataset
+}
+\description{
+Monthly number of burglaries on the south side of Chicago (552 blocks) during
+2010-2015 (72 temporal observations).
+}
+\usage{crime}
+\format{
+A time series object ("ts" class) with multivariate time series, a matrix with 72 rows and 552 columns.
+}
+\source{
+Clark and Dixon (2021), available at \url{https://github.com/nick3703/Chicago-Data}.
+}
+\references{
+Clark, N. J. and P. M. Dixon (2021). A class of spatially correlated
+self-exciting statistical models. \emph{Spatial Statistics}, 43, 1-18.
+}
+\seealso{
+\code{\link{crime_W}, \link{lin_estimnarpq}, \link{log_lin_estimnarpq}
+}
+}
+\examples{
+data(crime)
+data(crime_W)
+mod1 <- lin_estimnarpq( crime, crime_W, p = 1)
+mod2 <- log_lin_estimnarpq( crime, crime_W, p = 1)
+}

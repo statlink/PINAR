@@ -1,0 +1,512 @@
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     out = information matrix
+################################################################################
+.scor_hess_outer_linpq <- function(b, N, TT, y, wy, p, Z) {
+## scor
+lambdat <- as.vector( wy %*% b)
+a <- wy * ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat
+scor <- matrix( - Rfast::colsums(a), 2 * p + 1, 1 )
+## hess
+ct <- as.vector(y[, -(1:p)]) / lambdat^2
+hh <- crossprod( wy * ct, wy )
+## outer
+#out1 <- 0
+k <- rep( 1:c(TT - p), each = N )
+b1 <- rowsum(a, k)
+#for (i in 1: c(TT - p) )  out1 <- out1 + tcrossprod(b1[i, ])
+out1 <- crossprod(b1)
+list(scor = scor, hh = hh, out = out1)
+}
+y
+W
+p
+p=1
+Z=z
+if ( min(W) < 0 ) {
+stop('The adjacency matrix W contains negative values.')
+}
+if ( !is.null(Z) ) {
+if ( min(Z) < 0 ) {
+stop('The matrix of covariates Z contains negative values.')
+}
+}
+W <- W / Rfast::rowsums(W)
+W[ is.na(W) ] <- 0
+dm <- dim(y)   ;    N <- dm[1]    ;    TT <- dm[2]
+z <- W %*% y
+wy <- NULL
+for ( ti in (p + 1):TT )  wy <- rbind( wy, cbind(z[, (ti - 1):(ti - p)], y[, (ti - 1):(ti - p)], Z) )
+wy <- cbind(1, wy)
+Z
+XX <- crossprod(wy)
+Xy <- Rfast::eachcol.apply(wy, as.vector( y[, -c(1:p)] ) )
+x0 <- solve(XX, Xy)
+x0[x0 < 0] <- 0.001
+m <- length(x0)
+# Lower and upper bounds (positivity constraints)
+lb <- rep(0, m)
+ub <- rep(Inf, m)
+# Inequality constraints (parameters searched in the stationary region)
+# b are the parameters to be constrained
+constr <- function(b, N, TT, y, W, wy, p, Z) {
+con <- sum( b[2:(2 * p + 1)] ) -1
+return(con)
+}
+# Jacobian of constraints
+# b are the parameters to be constrained
+j_constr <- function(b, N, TT, y, W, wy, p, Z) {
+j_con <- rep(1, m)
+j_con[1] <- 0
+return(j_con)
+}
+# algorithm and relative tolerance
+opts <- list( "algorithm" = "NLOPT_LD_SLSQP", "xtol_rel" = 1.0e-8 )
+s_qmle <- nloptr::nloptr(x0 = x0, eval_f = .logl_linpq, eval_grad_f = .scor_linpq,
+lb = lb, ub = ub, eval_g_ineq = constr, eval_jac_g_ineq = j_constr,
+opts = opts, N = N, TT = TT, y = y, W = W, wy = wy, p = p, Z = Z)
+lambdat <- as.vector( wy %*% b)
+b=bs(runif(3))
+b=abs(runif(3))
+lambdat <- as.vector( wy %*% b)
+b
+b=abs(runif(4))
+lambdat <- as.vector( wy %*% b)
+a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat )
+matrix(a, 2 * p + 1, 1)
+p
+2*p+1
+a
+b
+matrix(a, 2 * p + 1 +1, 1)
+source('C:/Users/Michail/Desktop/Folder/paketo/PNAR/PNAR/R/log_lin_estimnarpq.R')
+library(PNAR)
+?lin_estimnarpq
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3)
+y
+dim(y)
+Z=abs(rnorm(20))
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3,Z=z)
+Z=z
+lambdat <- as.vector(wy %*% b)
+- sum( as.vector( y[, -c(1:p)] ) * log(lambdat) - lambdat )
+lambdat <- as.vector( wy %*% b)
+a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat )
+matrix(a, 2 * p + 1 + max( 0, ncol(Z) ), 1)
+a
+p
+2*p
+max( 0, ncol(Z) )
+ncol(Z)
+Z=abs(rnorm(20))
+Z
+if ( min(W) < 0 ) {
+stop('The adjacency matrix W contains negative values.')
+}
+if ( !is.null(Z) ) {
+if ( min(Z) < 0 ) {
+stop('The matrix of covariates Z contains negative values.')
+}
+}
+W <- W / Rfast::rowsums(W)
+W[ is.na(W) ] <- 0
+dm <- dim(y)   ;    N <- dm[1]    ;    TT <- dm[2]
+z <- W %*% y
+wy <- NULL
+for ( ti in (p + 1):TT )  wy <- rbind( wy, cbind(z[, (ti - 1):(ti - p)], y[, (ti - 1):(ti - p)], Z) )
+wy <- cbind(1, wy)
+XX <- crossprod(wy)
+Xy <- Rfast::eachcol.apply(wy, as.vector( y[, -c(1:p)] ) )
+x0 <- solve(XX, Xy)
+x0[x0 < 0] <- 0.001
+m <- length(x0)
+# Lower and upper bounds (positivity constraints)
+lb <- rep(0, m)
+ub <- rep(Inf, m)
+constr <- function(b, N, TT, y, W, wy, p, Z) {
+con <- sum( b[2:(2 * p + 1)] ) -1
+return(con)
+}
+# Jacobian of constraints
+# b are the parameters to be constrained
+j_constr <- function(b, N, TT, y, W, wy, p, Z) {
+j_con <- rep(1, m)
+j_con[1] <- 0
+return(j_con)
+}
+# algorithm and relative tolerance
+opts <- list( "algorithm" = "NLOPT_LD_SLSQP", "xtol_rel" = 1.0e-8 )
+s_qmle <- nloptr::nloptr(x0 = x0, eval_f = .logl_linpq, eval_grad_f = .scor_linpq,
+lb = lb, ub = ub, eval_g_ineq = constr, eval_jac_g_ineq = j_constr,
+opts = opts, N = N, TT = TT, y = y, W = W, wy = wy, p = p, Z = Z)
+################################################################################
+################################################################################
+##  logl_linpq() --- function for the computation of log-likelihood of the linear
+##  PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models in the following order:
+##        (intercept, p network effects, p ar effects, covariates)
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     g = (-1)* independence quasi log-likelihood
+################################################################################
+.logl_linpq <- function(b, N, TT, y, W, wy, p, Z) {
+lambdat <- as.vector(wy %*% b)
+- sum( as.vector( y[, -c(1:p)] ) * log(lambdat) - lambdat )
+}
+################################################################################
+################################################################################
+##  scor_linpq() --- function for the computation of score of the linear
+##  PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models in the following order:
+##        (intercept, p network effects, p ar effects, covariates)
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     ss = (-1)* vector of quasi score
+################################################################################
+.scor_linpq <- function(b, N, TT, y, W, wy, p, Z) {
+lambdat <- as.vector( wy %*% b)
+a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat )
+matrix(a, 2 * p + 1 + max( 0, ncol(Z) ), 1)
+}
+################################################################################
+################################################################################
+##  hess_linpq() --- function for the computation of Hessian matrix of the
+##  linear PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     hh = (-1)*Hessian matrix
+################################################################################
+################################################################################
+################################################################################
+##  outer_linpq() --- function for the computation of information matrix of the
+##  linear PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     out = information matrix
+################################################################################
+.scor_hess_outer_linpq <- function(b, N, TT, y, wy, p, Z) {
+## scor
+lambdat <- as.vector( wy %*% b)
+a <- wy * ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat
+scor <- matrix( - Rfast::colsums(a), 2 * p + 1 + max( 0, ncol(Z) ), 1 )
+## hess
+ct <- as.vector(y[, -(1:p)]) / lambdat^2
+hh <- crossprod( wy * ct, wy )
+## outer
+#out1 <- 0
+k <- rep( 1:c(TT - p), each = N )
+b1 <- rowsum(a, k)
+#for (i in 1: c(TT - p) )  out1 <- out1 + tcrossprod(b1[i, ])
+out1 <- crossprod(b1)
+list(scor = scor, hh = hh, out = out1)
+}
+s_qmle <- nloptr::nloptr(x0 = x0, eval_f = .logl_linpq, eval_grad_f = .scor_linpq,
+lb = lb, ub = ub, eval_g_ineq = constr, eval_jac_g_ineq = j_constr,
+opts = opts, N = N, TT = TT, y = y, W = W, wy = wy, p = p, Z = Z)
+ncol(Z)
+Z
+NCOL(Z)
+ola <- .scor_hess_outer_linpq(coeflin, N, TT, y, wy, p, Z)
+b
+coeflin=b
+ola <- .scor_hess_outer_linpq(coeflin, N, TT, y, wy, p, Z)
+## scor
+lambdat <- as.vector( wy %*% b)
+a <- wy * ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat
+scor <- matrix( - Rfast::colsums(a), 2 * p + 1 + max( 0, ncol(Z) ), 1 )
+a
+colsums(a)
+2 * p + 1 + max( 0, ncol(Z) )
+max( 0, ncol(Z) )
+library(PNAR)
+?lin_estimnarpq
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3)
+Z1=Z
+Z1
+Z=NULL
+################################################################################
+################################################################################
+##  logl_linpq() --- function for the computation of log-likelihood of the linear
+##  PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models in the following order:
+##        (intercept, p network effects, p ar effects, covariates)
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     g = (-1)* independence quasi log-likelihood
+################################################################################
+.logl_linpq <- function(b, N, TT, y, W, wy, p, Z) {
+lambdat <- as.vector(wy %*% b)
+- sum( as.vector( y[, -c(1:p)] ) * log(lambdat) - lambdat )
+}
+################################################################################
+################################################################################
+##  scor_linpq() --- function for the computation of score of the linear
+##  PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models in the following order:
+##        (intercept, p network effects, p ar effects, covariates)
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     ss = (-1)* vector of quasi score
+################################################################################
+.scor_linpq <- function(b, N, TT, y, W, wy, p, Z) {
+lambdat <- as.vector( wy %*% b)
+a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat )
+matrix(a, 2 * p + 1 + max( 0, NCOL(Z) ), 1)
+}
+################################################################################
+################################################################################
+##  hess_linpq() --- function for the computation of Hessian matrix of the
+##  linear PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     hh = (-1)*Hessian matrix
+################################################################################
+################################################################################
+################################################################################
+##  outer_linpq() --- function for the computation of information matrix of the
+##  linear PNAR model with p lags and q covariates. Inputs:
+##     b = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##     p = number of lags in the model
+##     Z = Nxq matrix of covariates (one for each column), where q is the number of
+##         covariates in the model. They must be non-negative
+##  output:
+##     out = information matrix
+################################################################################
+.scor_hess_outer_linpq <- function(b, N, TT, y, wy, p, Z) {
+## scor
+lambdat <- as.vector( wy %*% b)
+a <- wy * ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat
+scor <- matrix( - Rfast::colsums(a), 2 * p + 1 + max( 0, NCOL(Z) ), 1 )
+## hess
+ct <- as.vector(y[, -(1:p)]) / lambdat^2
+hh <- crossprod( wy * ct, wy )
+## outer
+#out1 <- 0
+k <- rep( 1:c(TT - p), each = N )
+b1 <- rowsum(a, k)
+#for (i in 1: c(TT - p) )  out1 <- out1 + tcrossprod(b1[i, ])
+out1 <- crossprod(b1)
+list(scor = scor, hh = hh, out = out1)
+}
+if ( min(W) < 0 ) {
+stop('The adjacency matrix W contains negative values.')
+}
+if ( !is.null(Z) ) {
+if ( min(Z) < 0 ) {
+stop('The matrix of covariates Z contains negative values.')
+}
+}
+W <- W / Rfast::rowsums(W)
+W[ is.na(W) ] <- 0
+dm <- dim(y)   ;    N <- dm[1]    ;    TT <- dm[2]
+z <- W %*% y
+wy <- NULL
+for ( ti in (p + 1):TT )  wy <- rbind( wy, cbind(z[, (ti - 1):(ti - p)], y[, (ti - 1):(ti - p)], Z) )
+wy <- cbind(1, wy)
+XX <- crossprod(wy)
+Xy <- Rfast::eachcol.apply(wy, as.vector( y[, -c(1:p)] ) )
+x0 <- solve(XX, Xy)
+x0[x0 < 0] <- 0.001
+m <- length(x0)
+# Lower and upper bounds (positivity constraints)
+lb <- rep(0, m)
+ub <- rep(Inf, m)
+# Inequality constraints (parameters searched in the stationary region)
+# b are the parameters to be constrained
+constr <- function(b, N, TT, y, W, wy, p, Z) {
+con <- sum( b[2:(2 * p + 1)] ) -1
+return(con)
+}
+# Jacobian of constraints
+# b are the parameters to be constrained
+j_constr <- function(b, N, TT, y, W, wy, p, Z) {
+j_con <- rep(1, m)
+j_con[1] <- 0
+return(j_con)
+}
+opts <- list( "algorithm" = "NLOPT_LD_SLSQP", "xtol_rel" = 1.0e-8 )
+s_qmle <- nloptr::nloptr(x0 = x0, eval_f = .logl_linpq, eval_grad_f = .scor_linpq,
+lb = lb, ub = ub, eval_g_ineq = constr, eval_jac_g_ineq = j_constr,
+opts = opts, N = N, TT = TT, y = y, W = W, wy = wy, p = p, Z = Z)
+lambdat <- as.vector( wy %*% b)
+b=abs(rnorm(4))
+lambdat <- as.vector( wy %*% b)
+dim(wy)
+b=abs(rnorm(3)))
+b=abs(rnorm(3))
+a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:p)]) - lambdat ) / lambdat )
+NCOL(Z)
+Z
+Z
+NCOL(Z)
+ncol(Z)
+2 * p + 1 + max( 0, ncol(Z) )
+2 * p + 1
+?log_lin_estimnarpq
+library(PNAR)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3,Z=Z1)
+library(PNAR)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3,Z=Z1)
+Z=Z1
+if ( min(W) < 0 ) {
+stop('The adjacency matrix W contains negative values.')
+}
+if ( !is.null(Z) ) {
+if ( min(Z) < 0 ) {
+stop('The matrix of covariates Z contains negative values.')
+}
+Z <- model.matrix(~., as.data.frame(Z))
+Z <- Z[1:dim(y)[1], ]
+}
+W <- W / Rfast::rowsums(W)
+W[ is.na(W) ] <- 0
+dm <- dim(y)   ;    N <- dm[1]    ;    TT <- dm[2]
+z <- W %*% y
+wy <- NULL
+for ( ti in (p + 1):TT )  wy <- rbind( wy, cbind(z[, (ti - 1):(ti - p)], y[, (ti - 1):(ti - p)], Z) )
+wy <- cbind(1, wy)
+XX <- crossprod(wy)
+Xy <- Rfast::eachcol.apply(wy, as.vector( y[, -c(1:p)] ) )
+x0 <- solve(XX, Xy)
+x0[x0 < 0] <- 0.001
+m <- length(x0)
+# Lower and upper bounds (positivity constraints)
+lb <- rep(0, m)
+ub <- rep(Inf, m)
+# Inequality constraints (parameters searched in the stationary region)
+# b are the parameters to be constrained
+constr <- function(b, N, TT, y, W, wy, p, Z) {
+con <- sum( b[2:(2 * p + 1)] ) -1
+return(con)
+}
+# Jacobian of constraints
+# b are the parameters to be constrained
+j_constr <- function(b, N, TT, y, W, wy, p, Z) {
+j_con <- rep(1, m)
+j_con[1] <- 0
+return(j_con)
+}
+XX
+model.matrix(~., as.data.frame(Z))
+Z1
+library(PNAR)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3,Z=Z1)
+library(PNAR)
+W <- adja_gnp(20, 0.3)
+y <- matrix(rpois(20 * 100, 10), ncol = 100)
+mod <- lin_estimnarpq(y, W, p = 3,Z=Z1)
+source('C:/Users/Michail/Desktop/Folder/paketo/PNAR/PNAR/R/score_test_tnarpq_j.R')
+library(PNAR)
+?score_test_tnarpq_j
+# load data
+data(crime)
+data(crime_W)
+#estimate linear PNAR model
+mod1 <- lin_estimnarpq(crime, crime_W, p = 2)
+b <- mod1$coeflin
+g <- global_optimise_LM_tnarpq(b = b, y = crime, W = crime_W, p = 2, d = 1)
+supg <- g$supLM
+score_test_tnarpq_j(supLM = supg, b = b, y = crime, W = crime_W, p = 2, d = 1, J = 5)
+# load data
+data(crime)
+data(crime_W)
+#estimate linear PNAR model
+mod1 <- lin_estimnarpq(crime, crime_W, p = 2)
+b <- mod1$coeflin
+g <- global_optimise_LM_tnarpq(b = b, y = crime, W = crime_W, p = 2, d = 1)
+supg <- g$supLM
+score_test_tnarpq_j(supLM = supg, b = b, y = crime, W = crime_W, p = 2, d = 1, J = 5,ncores=3)
+library(doParallel)
+# load data
+data(crime)
+data(crime_W)
+#estimate linear PNAR model
+mod1 <- lin_estimnarpq(crime, crime_W, p = 2)
+b <- mod1$coeflin
+g <- global_optimise_LM_tnarpq(b = b, y = crime, W = crime_W, p = 2, d = 1)
+supg <- g$supLM
+score_test_tnarpq_j(supLM = supg, b = b, y = crime, W = crime_W, p = 2, d = 1, J = 5,ncores=3)
+library(PNAR)
+model.matrix
+library(PNAR)
+library(PNAR)
+sessioninfo::package_info("PNAR")
+devtools::build_manual("~/R/win-library/4.0/PNAR", path = "C:/Users/Michail/Desktop/")
+library(PNAR)
+sessioninfo::package_info("PNAR")
+devtools::build_manual("~/R/win-library/4.0/PNAR", path = "C:/Users/Michail/Desktop/")
+library(PNAR)
+sessioninfo::package_info("PNAR")
+devtools::build_manual("~/R/win-library/4.0/PNAR", path = "C:/Users/Michail/Desktop/")
+library(PNAR)

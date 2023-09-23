@@ -1,0 +1,325 @@
+################################################################################
+################################################################################
+##  logl_lin2() --- function for the computation of log-likelihood of the linear
+##  PNAR model with 2 lags. Inputs:
+##     c = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##  output:
+##     g = (-1)* independence quasi log-likelihood
+################################################################################
+
+logl_lin2_new <- function(ca, N, TT, y, W) {
+  wy <- cbind( 1, as.vector( W %*% y[, -c(1, TT)] ), as.vector( y[, -c(1, TT)] ), 
+                  as.vector( W %*% y[, -c(TT, TT - 1)] ), as.vector( y[, -c(TT, TT - 1) ] ) )
+  lambdat <- as.vector( wy %*% ca)
+  - sum( y[, -c(1:2)] * log(lambdat) - lambdat ) 
+}
+
+logl_lin2_old <- function(ca, N, TT, y, W) {
+  
+  unon <- matrix(1, N, 1)
+  g <- 0
+  
+  for ( ti in 3:TT ) {
+    Xt <- cbind( unon, W %*% y[, ti - 1], y[, ti - 1], W %*% y[, ti - 2], y[, ti - 2] )
+    lambdat <- Xt %*% ca
+    g <- g + crossprod( y[, ti], log(lambdat) ) - sum(lambdat)
+  }
+  
+  return( - g)
+}
+
+
+################################################################################
+################################################################################
+##  scor_lin2() --- function for the computation of score of the linear
+##  PNAR model with 2 lags. Inputs:
+##     c = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##  output:
+##     ss = (-1)* vector of quasi score
+################################################################################
+scor_lin2_new <- function(ca, N, TT, y, W) {
+
+  wy <- cbind( 1, as.vector( W %*% y[, -c(1, TT)] ), as.vector( y[, -c(1, TT)] ), 
+                  as.vector( W %*% y[, -c(TT, TT - 1)] ), as.vector( y[, -c(TT, TT - 1) ] ) )
+  lambdat <- as.vector( wy %*% ca)
+  a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:2)]) - lambdat ) / lambdat )
+  matrix(a, 5, 1)
+
+}
+
+scor_lin2_old <- function(ca, N, TT, y, W) {
+  
+  unon <- matrix(1, nrow = N, ncol = 1)
+  ss <- matrix(0, nrow = 5, ncol = 1)
+  
+  for(ti in 3:TT){
+    Xt <- cbind( unon, W %*% y[, ti - 1], y[, ti - 1], W %*% y[, ti - 2], y[, ti - 2] )
+    lambdat <- as.vector( Xt %*% ca )
+    ss <- ss + crossprod(Xt / lambdat, y[, ti] - lambdat)
+  }
+  
+  return(-ss)
+}
+
+
+################################################################################
+################################################################################
+##  outer_lin2() --- function for the computation of information matrix of the
+##  linear PNAR model with 2 lags. Inputs:
+##     c = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##  output:
+##     out = information matrix
+################################################################################
+
+outer_lin2_new <- function(ca, N, TT, y, W) {
+
+  wy <- cbind( 1, as.vector( W %*% y[, -c(1, TT)] ), as.vector( y[, -c(1, TT)] ), 
+                  as.vector( W %*% y[, -c(TT, TT - 1)] ), as.vector( y[, -c(TT, TT - 1) ] ) )
+  lambdat <- as.vector( wy %*% ca)
+  a <- wy * ( as.vector(y[, -c(1:2)]) - lambdat ) / lambdat 
+  out <- 0
+  k <- rep( 1:c(TT - 2), each = N )
+  b <- rowsum(a, k)
+  for (i in 1: c(TT - 2) )  out <- out + tcrossprod(b[i, ])
+  out
+
+}
+
+outer_lin2_old <- function(ca, N, TT, y, W) {
+  
+  unon <- matrix(1, nrow = N, ncol = 1)
+  out <- matrix(0, nrow = 5, ncol = 5)
+  
+  for ( ti in 3:TT ) {
+    Xt <- cbind( unon, W %*% y[, ti - 1], y[, ti - 1], W %*% y[, ti - 2], y[, ti - 2] )
+    lambdat <- as.vector( Xt %*% ca )
+    ss <- crossprod(Xt / lambdat, y[, ti] - lambdat)
+    out <- out + tcrossprod(ss)
+  }
+  
+  return(out)
+}
+
+
+################################################################################
+################################################################################
+##  hess_lin2() --- function for the computation of Hessian matrix of the
+##  linear PNAR model with 2 lags. Inputs:
+##     c = parameters of the models
+##     N = number of nodes on the network
+##     TT = temporal sample size
+##     y = NxTT multivariate count time series
+##     W = NxN row-normalized weighted adjacency matrix describing the network
+##  output:
+##     hh = (-1)*Hessian matrix
+################################################################################
+
+hess_lin2_new <- function(ca, N, TT, y, W) {
+
+ wy <- cbind( 1, as.vector( W %*% y[, -c(1, TT)] ), as.vector( y[, -c(1, TT)] ), 
+                  as.vector( W %*% y[, -c(TT, TT - 1)] ), as.vector( y[, -c(TT, TT - 1) ] ) )
+  ct <- as.vector(y[, -(1:2)]) / as.vector( wy %*% ca )^2
+  crossprod( wy * ct, wy )
+
+}
+
+hess_lin2_old <- function(ca, N, TT, y, W) {
+  
+  unon <- matrix(1, nrow = N, ncol = 1)
+  hh <- matrix(0, nrow = 5, ncol = 5)
+  
+  for ( ti in 3:TT ) {
+    Xt <- cbind( unon, W %*% y[, ti - 1], y[, ti - 1], W %*% y[, ti - 2], y[, ti - 2] )
+    Ct <- y[, ti] / as.vector(Xt %*% ca)^2 
+    hh <- hh + crossprod(Xt * Ct, Xt)
+  }
+  
+  return(hh)
+}
+
+
+################################################################################
+################################################################################
+##  ols.nar2() --- Compute OLS estimates of the parameters to be used 
+##  as a starting value for the Quasi Maximum Likelihood optimization 
+##  of linear PNAR model with 2 lags. 
+##  Inputs:
+##    N = number of nodes on the network
+##    TT = temporal sample size
+##    y = NxTT multivariate count time series
+##    W = NxN row-normalized weighted adjacency matrix describing the network
+##  output:
+##    theta = vector of OLS estimated parameters
+################################################################################
+
+ols.nar2 <- function(N, TT, y, W) {
+  
+  wy <- cbind( 1, as.vector( W %*% y[, -c(1, TT)] ), as.vector( y[, -c(1, TT)] ), 
+                  as.vector( W %*% y[, -c(TT, TT - 1)] ), as.vector( y[, -c(TT, TT - 1) ] ) )
+  XX <- crossprod(wy)
+  Xy <- Rfast::eachcol.apply(wy, as.vector( y[, -c(1:2)] ) )  
+  theta <- solve(XX, Xy)
+  theta[theta < 0] <- 0.001
+  theta
+  
+}
+
+ols.nar2_old <- function(N, TT, y, W) {
+  
+  unon <- matrix(1, nrow = N, ncol = 1)
+  XX <- matrix(0, 5, 5)
+  Xy <- matrix(0, 5, 1)
+  
+  for ( ti in 3:TT ) {
+    XXt <- cbind( unon, W %*% y[, ti - 1], y[, ti - 1], W %*% y[, ti - 2], y[, ti - 2] )
+    XX <- XX + crossprod(XXt)
+    Xy <- Xy + crossprod(XXt, y[, ti])
+  }
+  
+  theta <- solve(XX, Xy)
+  theta[theta < 0] <- 0
+
+  return(theta)
+  
+}
+
+
+######################
+######################
+## Used functions 
+######################
+######################
+
+logl_lin2 <- function(ca, N, TT, y, W, wy) {
+  
+  lambdat <- as.vector( wy %*% ca)
+  - sum( y[, -c(1:2)] * log(lambdat) - lambdat ) 
+}
+
+scor_lin2 <- function(ca, N, TT, y, W, wy) {
+
+  lambdat <- as.vector( wy %*% ca)
+  a <-  - Rfast::eachcol.apply(wy, ( as.vector(y[, -c(1:2)]) - lambdat ) / lambdat )
+  matrix(a, 5, 1)
+
+}
+
+scor_hessian_out2 <- function(ca, N, TT, y, W, wy) {
+
+  lambdat <- as.vector( wy %*% ca)
+  a <- wy * ( as.vector(y[, -c(1:2)]) - lambdat ) / lambdat 
+  scor <- matrix( - Rfast::colsums(a), 5, 1 )
+
+  ## hess
+  ct <- as.vector(y[, -(1:2)]) / lambdat^2
+  hh <- crossprod( wy * ct, wy )
+
+  ## outer
+  out <- 0
+  k <- rep( 1:c(TT - 2), each = N )
+  b <- rowsum(a, k)
+  for (i in 1: c(TT - 2) )  out <- out + tcrossprod(b[i, ])
+
+  list(scor = scor, hh = hh, out = out)
+}
+
+################################################################################
+################################################################################
+##  lin_estimnar2() --- function for the constrained estimation of linear PNAR
+##  model with 2 lags.
+##  Inputs:
+##    x0 = starting value of the optimization
+##    N = number of nodes on the network
+##    TT = temporal sample size
+##    y = NxTT multivariate count time series
+##    W = NxN row-normalized weighted adjacency matrix describing the network
+##  output:
+##    coeflin = estimated QMLE coefficients
+##    selin = standard errors estimates
+##    tlin = t test estimates
+##    score = value of the score at the optimization point
+##    aic_lin = Akaike information criterion (AIC)
+##    bic_lin = Bayesian information criterion (BIC)
+##    qic_lin = Quasi information criterion (QIC)
+################################################################################
+
+lin_estimnar2 <- function(y, W) {
+  
+  if ( min(W) < 0 ) {
+    stop('The adjacency matrix W contains negative values.')
+  } 
+
+  W <- W / Rfast::rowsums(W)
+  W[ is.na(W) ] <- 0
+
+  # Lower and upper bounds (positivity constraints)
+  lb <- rep(0, 5)
+  ub <- rep(Inf, 5)
+  
+  # Inequality constraints (parameters searched in the stationary region)
+  # ca are the parameters to be constrained
+  constr <- function(ca, N, TT, y, W, wy) {
+    con <- ca[2] + ca[3] + ca[4] + ca[5] - 1
+    return(con)
+  }
+  
+  # Jacobian of constraints
+  # ca are the parameters to be constrained
+  j_constr <- function(ca, N, TT, y, W, wy) {
+    j_con <- c(0, 1, 1, 1, 1)
+    return(j_con)
+  }
+  
+  dm <- dim(y)   ;    N <- dm[1]    ;    TT <- dm[2]
+  z <- W %*% y
+  wy <- cbind( 1, as.vector( z[, -c(1, TT)] ), as.vector( y[, -c(1, TT)] ), 
+                  as.vector( z[, -c(TT, TT - 1)] ), as.vector( y[, -c(TT, TT - 1) ] ) )
+  z <- NULL 
+  
+  ## OLS initital values
+  XX <- crossprod(wy)
+  Xy <- Rfast::eachcol.apply(wy, as.vector( y[, -c(1:2)] ) )  
+  x0 <- solve(XX, Xy)
+  x0[x0 < 0] <- 0.001
+ 
+  # algorithm and relative tolerance
+  opts <- list("algorithm" = "NLOPT_LD_SLSQP", "xtol_rel" = 1.0e-7)
+  
+  s_qmle1 <- nloptr::nloptr(x0 = x0, eval_f = logl_lin2, eval_grad_f = scor_lin2,
+                    lb = lb, ub = ub, eval_g_ineq = constr, eval_jac_g_ineq = j_constr,
+                    opts = opts, N = N, TT = TT, y = y, W = W, wy = wy)
+  
+  coeflin <- s_qmle1$solution
+  
+  ola <- scor_hessian_out2(coeflin, N, TT, y, W, wy)
+  S_lins <- ola$scor
+  H_lins <- ola$hh
+  G_lins <- ola$out
+  solveH_lins <- solve(H_lins)
+  V_lins <- solveH_lins %*% G_lins %*% solveH_lins
+  SE_lins <- sqrt( diag(V_lins) )
+  
+  tlin <- coeflin/SE_lins
+  
+  loglik <-  - s_qmle1$objective
+  aic_lins <- 2 * 5 + 2 * s_qmle1$objective
+  bic_lins <- log(TT) * 5 + 2 * s_qmle1$objective
+  qic_lins <- 2 * sum(H_lins * V_lins) + 2 * s_qmle1$objective
+  
+  list( coeflin = coeflin, selin = SE_lins, tlin = tlin, score = S_lins,
+        loglik = loglik, aic_lin = aic_lins, bic_lin = bic_lins, qic_lin = qic_lins )
+}
+
+

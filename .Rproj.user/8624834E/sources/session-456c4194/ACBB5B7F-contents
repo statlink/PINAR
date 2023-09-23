@@ -1,0 +1,27 @@
+export(adja, adja_gnp, getN, global_optimise_LM_stnarpq, global_optimise_LM_tnarpq,
+       lin_estimnarpq, log_lin_estimnarpq, poisson.MODpq.log, poisson.MODpq.nonlin,
+       poisson.MODpq, poisson.MODpq.stnar, poisson.MODpq.tnar, rcopula,
+       score_test_nonlinpq_h0, score_test_stnarpq_DV, score_test_stnarpq_j,
+       score_test_tnarpq_j, lin_ic_plot, log_lin_ic_plot, lin_narpq_init,
+       log_lin_narpq_init
+)
+
+S3method(summary, PNAR)
+S3method(print, summary.PNAR)
+S3method(print, PNAR)
+
+import("doParallel")
+import("parallel")
+import("foreach")
+
+importFrom("igraph", sample_sbm, as_adjacency_matrix)
+importFrom("nloptr", nloptr)
+importFrom("Rfast", colCumSums, eachrow, rowsums)
+importFrom("Rfast2", rowQuantile)
+importFrom("graphics", abline, mtext, points)
+importFrom("grDevices", dev.new)
+importFrom("stats", toeplitz, pchisq, pnorm, pt, rchisq, rgamma, runif,
+           optimise, model.matrix, glm, logLik, poisson, ts)
+
+
+

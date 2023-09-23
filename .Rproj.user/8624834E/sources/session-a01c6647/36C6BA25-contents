@@ -1,0 +1,14 @@
+.onAttach <- function(lib, pkg) {
+	version <- read.dcf(file.path(lib, pkg, "DESCRIPTION"),"Version")
+	packageStartupMessage(paste("\nRfast: ",version))
+	msg <-  paste(
+			r"( _ _ _ _ _    _       _    _ _ _ _ _    _ _ _ _ _)",
+			r"(|  _ _ _  |  |  \    | |  |   ___   |  |   ___   |)",
+			r"(| |_ _ _| |  |   \   | |  |  |___|  |  |  |___|  |)",
+			r"(|  _ _ _ _|  |  _ \  | |  |  _ _ _  |  |     _ _ |)",
+			r"(| |          | | \ \_| |  | |     | |  | |\ \)",
+			r"(| |          | |  \    |  | |     | |  | | \ \__)",
+			r"(|_|          |_|   \_ _|  |_|     |_|  | |  \_ _|)"
+	,sep="\n")
+	packageStartupMessage(msg)
+}

@@ -1,0 +1,156 @@
+poisson.MODpq.tnar <- function(b, W, gama, a, p, d, Z = NULL, TT, N, copula = "gaussian",
+                          corrtype = "equicorrelation", rho, dof = 1) {
+
+  if ( min(W) < 0 ) {
+    stop('The adjacency matrix W contains negative values.')
+  }
+
+  if ( !is.null(Z) ) {
+    if ( min(Z) < 0 ) {
+      stop('The matrix of covariates Z contains negative values.')
+    }
+    Z <- model.matrix( ~., as.data.frame(Z) )
+    Z <- Z[1:N, -1, drop = FALSE]
+  }
+
+  n <- 100
+  W <- W / Rfast::rowsums(W)
+  W[ is.na(W) ] <- 0
+
+  y <- matrix(NA, N, TT)
+  lambda <- matrix(NA, N, TT)
+  ca <- matrix(0, N, TT)
+  lambda[, 1:p] <- 1
+
+  if ( copula != "clayton" )  {
+    if ( corrtype == "equicorrelation" ) {
+	    p2R <- NULL
+      R <- matrix(rho, nrow = N, ncol = N)
+      diag(R) <- 1
+    } else {
+      p2R <- rho^( 1:(N - 1) )
+      R <- toeplitz( c(1, p2R ) )
+    }  ##  end  if ( corrtype == "equicorrelation" ) {
+    cholR <- chol(R)
+  } else  cholR <- NULL   ##  end  if ( copula != "clayton" )  {
+
+  for ( ti in 1:p) {
+    u <- PNAR::rcopula(n, N, copula, corrtype, rho, dof, cholR)
+    x <- Rfast::eachrow( log(u), -lambda[, ti], oper = "/" )
+    y[, ti] <- PNAR::getN(x, tt = 1)
+    i <- 0
+    while ( sum( is.na(y[, ti]) ) > 0 ) {
+      i <- i + 2
+      u <- PNAR::rcopula(n, N, copula, corrtype, rho, dof, cholR)
+      x <- Rfast::eachrow( log(u), -lambda[, ti], oper = "/" )
+      y[, ti] <- PNAR::getN(x, tt = 1)
+    }
+    ca[, ti] <- ( W %*% y[, ti] <= gama )
+    x <- u <- NULL
+  }
+
+  for ( ti in (p + 1):TT ) {
+    X <- cbind(1, W %*% y[, (ti - 1):(ti - p)], y[, (ti - 1):(ti - p)], Z)
+    lambda[, ti] <- X %*% b + ( X[, 1:(1 + 2 * p)] %*%  a ) * ca[, ti - d]
+    u <- PNAR::rcopula(n, N, copula, corrtype, rho, dof, cholR)
+    x <- Rfast::eachrow( log(u), -lambda[, ti], oper = "/" )
+    y[, ti] <- PNAR::getN(x, tt = 1)
+    i <- 0
+    while ( sum( is.na(y[, ti]) ) > 0 ) {
+      i <- i + 2
+      u <- PNAR::rcopula(n, N, copula, corrtype, rho, dof, cholR)
+      x <- Rfast::eachrow( log(u), -lambda[, ti], oper = "/" )
+      y[, ti] <- PNAR::getN(x, tt = 1)
+    }
+    ca[, ti] <- ( W %*% y[, ti] <= gama )
+  }
+
+  x <- u <- NULL
+
+  lambda <- ts( t(lambda) )
+  y <- ts( t(y) )
+  list(p2R = p2R, lambda = lambda, y = y)
+}
+
+
+#########################################################################################
+#########################################################################################
+##  poisson.MODpq.tar() --- function to generate counts from Poisson non-linear
+##  Threshold PNAR(p) model, with q non time-varying covariates,
+##  and with parameters:
+##      b = linear parameters of the models in the following order:
+##          (intercept, p network effects, p ar effects, covariates)
+##      W = NxN row-normalized weighted adjacency matrix describing the network
+##      a = vector of non-linear parameters
+##      gamma = nuisance threshold parameter
+##      p = number of lags in the model
+##      d = lag parameter of threshold variable (should be between 1 and p)
+##      Z = Nxq matrix of covariates (one for each column), where q is the number of
+##          covariates in the model. They must be non-negative
+##      Time = temporal sample size
+##      N = number of nodes on the network
+##      copula =  from which copula generate the data:
+##                "gaussian":      Gaussian copula with Toeplitz correlation matrix
+##                "gaussian_rho":  Gaussian copula with constant correlation matrix
+##                "student":       Student's t copula with Toeplitz correlation matrix
+##                 ... we can add more
+##      rho = copula parameter
+##      df = degrees of freedom for Student's t copula
+##  output, a list of three values:
+##      y = NxTime matrix of generated counts for N time series over Time
+##      lambda = NxTime matrix of generated Poisson mean for N time series over Time
+##      p2R = Toeplitz correlation matrix employed in the copula
+#########################################################################################
+
+# poisson.MODpq.tar <- function(b, W, gamma, a, p, d, Z, Time, N, copula, rho, df)
+# {
+#   p2R <- rho^(1:(N-1))      ### creates column vectors of corr matrix R=(rho^|i-j|)_(i,j),
+#   R=toeplitz(c(1,p2R))      ### this is a symmetric Toeplitz matrix
+#
+#   y=matrix(NA, nrow=N, ncol=Time)
+#   c=matrix(NA, nrow=N, ncol=Time)
+#   lambda=matrix(NA, nrow=N, ncol=Time)
+#   lambda[,1:p]=rep(1, N)
+#
+#   for( t in 1:p){
+#
+#     if(copula=="gaussian") ustart=rCopula(100, normalCopula(param=p2R, dispstr = "toep", dim=N))
+#
+#     if(copula=="gaussian_rho") ustart=rCopula(100, normalCopula(rho, dim = N))
+#
+#     if(copula=="student") ustart=rCopula(100, tCopula(param=p2R, dispstr = "toep", df=df, dim=N))
+#
+#     if(copula=="clayton") ustart=rCopula(100, claytonCopula(rho, dim = N))
+#
+#     xstart <- matrix(nrow=100, ncol=N)
+#     xstart  =t(t(-log(ustart))/lambda[,t])
+#     y[,t] <-  apply(xstart,2, getN, tt=1)
+#
+#     c[,t] <- 0+(W%*%y[,t]<=gamma)
+#
+#   }
+#
+#   for (t in (p+1):Time){
+#
+#     X <- cbind(1, W%*%y[,(t-1):(t-p)], y[,(t-1):(t-p)], Z)
+#
+#     lambda[,t]=X%*%b+X[,1:(1+2*p)]%*%a*c[,t-d]
+#
+#     if(copula=="gaussian") u=rCopula(100, normalCopula(param=p2R, dispstr = "toep", dim=N))
+#
+#     if(copula=="gaussian_rho") u=rCopula(100, normalCopula(rho, dim = N))
+#
+#     if(copula=="student") u=rCopula(100, tCopula(param=p2R, dispstr = "toep", df=df, dim=N))
+#
+#     if(copula=="clayton") u=rCopula(100, claytonCopula(rho, dim = N))
+#
+#     x <- matrix(nrow=100, ncol=N)
+#     x =t(t(-log(u))/lambda[ ,t])
+#     y[,t] <- apply(x,2, getN,tt=1)
+#
+#     c[,t] <- 0+(W%*%y[,t]<=gamma)
+#
+#   }
+#   res <- list(lambda=lambda, y=y, p2R=p2R)
+#   return(res)
+# }
