@@ -1,3 +1,0 @@
-library(devtools)
-
-build_manual(pkg = "C:\\Users\\mtsag\\Desktop\\Folder\\paketo\\PNAR\\PNAR")
