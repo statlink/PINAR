@@ -1,7 +1,5 @@
 log_lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC") {
 
-  criterion <- ic
-
   if ( min(W) < 0 ) {
     stop('The adjacency matrix W contains negative values.')
   }
@@ -76,7 +74,7 @@ log_lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC"
 
   }
 
-  if ( criterion == "AIC" ) {
+  if ( ic == "AIC" ) {
 
   plot(p, ic[, 1], type = "b", xlab = "Lag", ylab = "AIC", cex.lab = 1.3, cex.axis = 1.3, xaxt = "n")
   abline(v = p, col = "lightgrey", lty = 2)
@@ -84,7 +82,7 @@ log_lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC"
   points(p, ic[, 1], pch = 16, col = "blue")
   mtext(text = p, side = 1, at = p, las = 1, font = 2, line = 0.7 )
 
-  } else if ( criterion == "BIC" ) {
+  } else if ( ic == "BIC" ) {
 
   plot(p, ic[, 2], type = "b", xlab = "Lag", ylab = "BIC", cex.lab = 1.3, cex.axis = 1.3, xaxt = "n")
   abline(v = p, col = "lightgrey", lty = 2)
@@ -92,7 +90,7 @@ log_lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC"
   points(p, ic[, 2], pch = 16, col = "blue")
   mtext(text = p, side = 1, at = p, las = 1, font = 2, line = 0.7 )
 
-  } else if ( criterion == "QIC" ) {
+  } else if ( ic == "QIC" ) {
 
   plot(p, ic[, 3], type = "b", xlab = "Lag", ylab = "QIC", cex.lab = 1.3, cex.axis = 1.3, xaxt = "n")
   abline(v = p, col = "lightgrey", lty = 2)

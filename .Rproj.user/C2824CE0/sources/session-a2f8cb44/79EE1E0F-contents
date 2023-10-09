@@ -1,17 +1,18 @@
-\name{lin_ic_plot}
-\alias{lin_ic_plot}
+\name{log_lin_ic_plot}
+\alias{log_lin_ic_plot}
 
 \title{
-Scatter plot of information criteria versus the number of lags in the linear Poisson NAR(p) model model with p lags and q
-covariates (PNAR(p))
+Scatter plot of information criteria versus the number of lags in the log-linear Poisson NAR(p) model with p lags and q
+covariates (log-PNAR(p))
 }
 
 \description{
-Scatter plot of information criteria versus the number of lags in the linear Poisson Network Autoregressive model of order \eqn{p} with \eqn{q} covariates (PNAR(\eqn{p})).
+Scatter plot of information criteria versus the number of lags in log-linear Poisson Network Autoregressive model of order
+\eqn{p} with \eqn{q} covariates (log-PNAR(\eqn{p})).
 }
 
 \usage{
-lin_ic_plot(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC")
+log_lin_ic_plot(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC")
 }
 
 \arguments{
@@ -50,7 +51,7 @@ covariates (PNAR(\eqn{p})).
 }
 
 \value{
-A scatter plot with the lag order versus either QIC (default), AIC or BIC, and a matrix
+Three scatter plots with the lag order versus AIC, BIC and QIC and a matrix
 with three columns, the AIC, BIC and QIC for each lag order.
 }
 
@@ -64,14 +65,14 @@ Mirko Armillotta, Michail Tsagris and Konstantinos Fokianos.
 }
 
 \seealso{
-\code{\link{lin_estimnarpq}, \link{log_lin_ic_plot}
+\code{\link{log_lin_estimnarpq}, \link{lin_ic_plot}
 }
 }
 
 \examples{
 data(crime)
 data(crime_W)
-lin_ic_plot(crime, crime_W, p = 1:3)
+log_lin_ic_plot(crime, crime_W, p = 1:3)
 }
 
 

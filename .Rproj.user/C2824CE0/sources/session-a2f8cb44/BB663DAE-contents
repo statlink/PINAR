@@ -50,7 +50,7 @@ covariates (PNAR(\eqn{p})).
 }
 
 \value{
-A scatter plot with the lag order versus either QIC (default), AIC or BIC, and a matrix
+Three scatter plots with the lag order versus AIC, BIC and QIC and a matrix
 with three columns, the AIC, BIC and QIC for each lag order.
 }
 
