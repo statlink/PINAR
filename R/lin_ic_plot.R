@@ -88,6 +88,9 @@ lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC") {
   points(p, ic[, 1], pch = 16, col = "blue")
   mtext(text = p, side = 1, at = p, las = 1, font = 2, line = 0.7 )
 
+  ic <- ic[, 1]
+  names(ic) <- paste("Lag=", p, sep = "")
+
   } else if ( criterion == "BIC" ) {
 
   plot(p, ic[, 2], type = "b", xlab = "Lag", ylab = "BIC", cex.lab = 1.3, cex.axis = 1.3, xaxt = "n")
@@ -95,6 +98,9 @@ lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC") {
   abline(h = seq(min(ic[, 2]), max(ic[, 2]), length.out = length(p) ), lty = 2, col = "lightgrey")
   points(p, ic[, 2], pch = 16, col = "blue")
   mtext(text = p, side = 1, at = p, las = 1, font = 2, line = 0.7 )
+
+  ic <- ic[, 2]
+  names(ic) <- paste("Lag=", p, sep = "")
 
   } else if ( criterion == "QIC" ) {
 
@@ -104,10 +110,10 @@ lin_ic_plot <- function(y, W, p = 1:10, Z = NULL, uncons = FALSE, ic = "QIC") {
   points(p, ic[, 3], pch = 16, col = "blue")
   mtext(text = p, side = 1, at = p, las = 1, font = 2, line = 0.7 )
 
+  ic <- ic[, 3]
+  names(ic) <- paste("Lag=", p, sep = "")
+
   }
 
-  colnames(ic) <- c("AIC", "BIC", "QIC")
-  rownames(ic) <- paste("Lag=", p, sep = "")
   ic
-
 }
