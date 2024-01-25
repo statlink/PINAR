@@ -1,0 +1,24 @@
+{
+    "id": "B31E87A9",
+    "path": "~/GitHub/PNAR/R/log_lin_estimnarpq.R",
+    "project_path": "R/log_lin_estimnarpq.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1706210205710.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "cursorPosition": "24,9",
+        "scrollLine": "7"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1694671809,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1694671809,
+    "read_only": false,
+    "read_only_alternatives": []
+}
