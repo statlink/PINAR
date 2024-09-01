@@ -1,11 +1,11 @@
 Package: PNAR
 Type: Package
 Title: Poisson Network Autoregressive Models
-Version: 1.6
-Date: 2023-10-09
+Version: 1.7
+Date: 2023-09-01
 Authors@R: c(
            person( "Michail", "Tsagris", role = c("aut", "cre"), email = "mtsagris@uoc.gr" ),
-           person( "Mirko", "Armillotta", role = c("aut", "cph"), email = "armillotta.mirko.ucy.ac.cy" ),
+           person( "Mirko", "Armillotta", role = c("aut", "cph"), email = "m.armillotta@vu.nl" ),
            person( "Konstantinos", "Fokianos", role = c("aut"), email = "fokianos@ucy.ac.cy" ) )
 Author: Michail Tsagris [aut, cre], Mirko Armillotta [aut, cph], Konstantinos Fokianos [aut]
 Maintainer: Michail Tsagris <mtsagris@uoc.gr>
