@@ -79,7 +79,7 @@ is the partition of the quasi score related to the vector of non-linear paramete
 
 The optimization employes the Brent algorithm (Brent, 1973) applied in the interval from \code{gama_L} to \code{gama_U}. To be sure that the global optimum is found, the optimization is performed at (\code{len}-1) consecutive equidistant sub-intervals and then the maximum over them is taken as global optimum.
 
-The values of \code{gama_L} and \code{gama_U} are computed internally as \code{gama_L} \eqn{=-\log(0.9)/X^{2}} and \code{gama_U} \eqn{=-\log(0.1)/X^{2}}, where \eqn{X} is the overall mean of \eqn{X_{i,t}} over the nodes \eqn{i=1,...,N} and times \eqn{t=1,...,TT}. Since the non-linear function \eqn{e^{-\gamma X_{i,t-d}^{2}}} ranges between 0 and 1, by considering \eqn{X} to be a representative value for the network mean, \code{gama_U} and \code{gama_L} would be the values of \eqn{\gamma} leading the non-linear switching function to be 0.1 and 0.9, respectively, so that in the optimization procedure the extremes of the function domain are excluded. Alternatively, their value can be supplied by the user. For details see Armillotta and Fokianos (2022b, Sec. 4-5).
+The values of \code{gama_L} and \code{gama_U} are computed internally as \code{gama_L} \eqn{=-\log(0.9)/X^{2}} and \code{gama_U} \eqn{=-\log(0.1)/X^{2}}, where \eqn{X} is the overall mean of \eqn{X_{i,t}} over the nodes \eqn{i=1,...,N} and times \eqn{t=1,...,TT}. Since the non-linear function \eqn{e^{-\gamma X_{i,t-d}^{2}}} ranges between 0 and 1, by considering \eqn{X} to be a representative value for the network mean, \code{gama_U} and \code{gama_L} would be the values of \eqn{\gamma} leading the non-linear switching function to be 0.1 and 0.9, respectively, so that in the optimization procedure the extremes of the function domain are excluded. Alternatively, their value can be supplied by the user. For details see Armillotta and Fokianos (2024a, Sec. 4-5).
 }
 
 \value{
@@ -96,11 +96,11 @@ A vector with the extremes points of sub-intervals.
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2023a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
-Armillotta, M. and K. Fokianos (2023b). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
+Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 
 Brent, R. (1973) Algorithms for Minimization without Derivatives.
 Prentice-Hall, Englewood Cliffs N.J.

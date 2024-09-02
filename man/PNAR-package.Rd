@@ -9,11 +9,11 @@ Poisson Network Autoregressive Models
 \description{
 Quasi likelihood-based methods for estimating linear and log-linear Poisson Network Autoregression models with p lags and covariates. Tools for testing the linearity versus several non-linear alternatives. Tools for simulation of multivariate count distributions, from linear and non-linear PNAR models, by using a specific copula construction. References include:
 
-Armillotta, M. and K. Fokianos (2023a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
-Armillotta, M. and K. Fokianos (2023b). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
+Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal} 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal} 15/4: 255--269.
 }
 
 \details{
@@ -31,11 +31,11 @@ Michail Tsagris, Mirko Armillotta and Konstantinos Fokianos.
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2022a). Poisson network autoregression.
-\url{https://arxiv.org/abs/2104.06296}
+Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
-Armillotta, M. and K. Fokianos (2022b). Testing linearity for network
-autoregressive models. \url{https://arxiv.org/abs/2202.03852}
+Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
+
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 }
 
 \note{

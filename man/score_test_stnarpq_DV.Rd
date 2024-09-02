@@ -83,7 +83,7 @@ where \eqn{M} is the maximum of the test statistic \eqn{LM(\gamma)}, computed by
 \deqn{
 V=|LM^{1/2}(\gamma_{1})-LM^{1/2}(\gamma_{L})|+|LM^{1/2}(\gamma_{2})-LM^{1/2}(\gamma_{1})|+...+|LM^{1/2}(\gamma_{U})-LM^{1/2}(\gamma_{l})|.
 }
-The feasible bound allows to approximate the p-values of the sup-type test in a straightforward way, by adding to the tail probability of a chi-square distribution a correction term which depends on the total variation of the process. For details see Armillotta and Fokianos (2022b, Sec. 5).
+The feasible bound allows to approximate the p-values of the sup-type test in a straightforward way, by adding to the tail probability of a chi-square distribution a correction term which depends on the total variation of the process. For details see Armillotta and Fokianos (2024a, Sec. 5).
 
 The values of \code{gama_L} and \code{gama_U} are computed internally as \code{gama_L} \eqn{=-\log(0.9)/X^{2}} and \code{gama_U} \eqn{=-\log(0.1)/X^{2}}, where \eqn{X} is the overall mean of \eqn{X_{i,t}} over the nodes \eqn{i=1,...,N} and times \eqn{t=1,...,TT}. Since the non-linear function \eqn{e^{-\gamma X_{i,t-d}^{2}}} ranges between 0 and 1, by considering \eqn{X} to be a representative value for the network mean, \code{gama_U} and \code{gama_L} would be the values of \eqn{\gamma} leading the non-linear switching function to be 0.1 and 0.9, respectively, so that in the optimization procedure the extremes of the function domain are excluded. Alternatively, their values can be supplied by the user.
 }
@@ -99,11 +99,11 @@ The value of the sup test statistic in the sample \eqn{y}.
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2023a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
-Armillotta, M. and K. Fokianos (2023b). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
+Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 
 Davies, R. B. (1987). Hypothesis testing when a nuisance parameter is
 present only under the alternative. \emph{Biometrika} 74, 33--43.

@@ -59,7 +59,7 @@ where
 \deqn{
 S(\hat{\theta})=\sum_{t=1}^{TT}\sum_{i=1}^{N}\left(\frac{Y_{i,t}}{\lambda_{i,t}(\hat{\theta})}-1\right)\frac{\partial\lambda_{i,t}(\hat{\theta})}{\partial\gamma}
 }
-is the partition of the quasi score related to the non-linear parameter \eqn{\gamma}, evaluated at the estimated parameters \eqn{\hat{\theta}} under the null assumption \eqn{H_{0}} (linear model), and \eqn{\Sigma(\hat{\theta})} is the variance of \eqn{S(\hat{\theta})}. Under \eqn{H_{0}}, the test asymptotically follows the \eqn{\chi^2} distribution with 1 degree of freedom. For details see Armillotta and Fokianos (2022b, Sec. 4).
+is the partition of the quasi score related to the non-linear parameter \eqn{\gamma}, evaluated at the estimated parameters \eqn{\hat{\theta}} under the null assumption \eqn{H_{0}} (linear model), and \eqn{\Sigma(\hat{\theta})} is the variance of \eqn{S(\hat{\theta})}. Under \eqn{H_{0}}, the test asymptotically follows the \eqn{\chi^2} distribution with 1 degree of freedom. For details see Armillotta and Fokianos (2024a, Sec. 4).
 }
 
 \value{
@@ -89,11 +89,11 @@ Alternatively, these can be printed via the function \code{\link{summary.nonlin}
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2023a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
-Armillotta, M. and K. Fokianos (2023b). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
+Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 }
 
 \author{
