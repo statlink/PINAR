@@ -91,9 +91,9 @@ is the partition of the quasi score related to the vector of non-linear paramete
 
 Since the test statistic depends on an unknown nuisance parameter (\eqn{\gamma}), the supremum of the statistic is considered in the test, \eqn{\sup_{\gamma}LM(\gamma)}. This value can be computed for the available sample by using the function \code{\link{global_optimise_LM_tnarpq}} and should be supplied here as an input \code{supLM}.
 
-The function performs the bootstrap resampling of the test statistic \eqn{\sup_{\gamma}LM(\gamma)} by employing Gaussian perturbations of the score \eqn{S(\hat{\theta},\gamma)}. For details see Armillotta and Fokianos (2024a, Sec. 5).
+The function performs the bootstrap resampling of the test statistic \eqn{\sup_{\gamma}LM(\gamma)} by employing Gaussian perturbations of the score \eqn{S(\hat{\theta},\gamma)}. For details see Armillotta and Fokianos (2024, Sec. 5).
 
-The values of \code{gama_L} and \code{gama_U} are computed internally as the mean over \eqn{i=1,...,N} of \eqn{20\%} and \eqn{80\%} quantiles of the empirical distribution of the network mean \eqn{X_{i,t}} for \eqn{t=1,...,TT}. In this way the optimization is performed for values of \eqn{\gamma} such that the indicator function \eqn{I(X_{i,t-d}\leq\gamma)} is not always close to 0 or 1. Alternatively, their value can be supplied by the user. For details see Armillotta and Fokianos (2024a, Sec. 4-5).
+The values of \code{gama_L} and \code{gama_U} are computed internally as the mean over \eqn{i=1,...,N} of \eqn{20\%} and \eqn{80\%} quantiles of the empirical distribution of the network mean \eqn{X_{i,t}} for \eqn{t=1,...,TT}. In this way the optimization is performed for values of \eqn{\gamma} such that the indicator function \eqn{I(X_{i,t-d}\leq\gamma)} is not always close to 0 or 1. Alternatively, their value can be supplied by the user. For details see Armillotta and Fokianos (2024, Sec. 4-5).
 
 \bold{Note:} For large datasets the function may require few minutes to run. Parallel computing is suggested to speed up the computations.
 }
@@ -116,11 +116,11 @@ The values of perturbed test statistic at the optimum point \code{gamaj}.
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
 Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 }
 
 \author{

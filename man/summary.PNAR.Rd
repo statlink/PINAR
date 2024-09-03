@@ -38,7 +38,7 @@ The summary.PNAR() function prints the output in the lm() style.
 }
 
 \references{
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 }
 
 \author{

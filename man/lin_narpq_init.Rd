@@ -47,11 +47,11 @@ A vector with the initial values.
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
 Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 }
 
 \author{

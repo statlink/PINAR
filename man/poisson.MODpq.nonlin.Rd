@@ -76,7 +76,7 @@ This function generates counts from a non-linear Intercept Drift Poisson NAR(\eq
 }
 where \eqn{X_{i,t}=\sum_{j=1}^{N}W_{ij}Y_{j,t}} is the network effect, i.e. the weighted average impact of node \eqn{i} connections, with the weights of the mean being \eqn{W_{ij}}, the single element of the network matrix \eqn{W}.
 
-The parameter \eqn{\beta_{0}} is the intercept of the model, \eqn{\beta_{1h}} are the network coefficients, \eqn{\beta_{2h}} are the autoregressive parameters, \eqn{\gamma} is the non-linear coefficient associated with the intercept drift, and \eqn{\delta_{l}} are the coefficients assocciated with the covariates \eqn{Z_{i,l}}. The coefficient \eqn{d} is considered as an extra parameter defining the lag of the network effect in the non-linear part of the model and is left to be set by the user. For details on ID-PNAR models see Armillotta and Fokianos (2024a, Sec. 2).
+The parameter \eqn{\beta_{0}} is the intercept of the model, \eqn{\beta_{1h}} are the network coefficients, \eqn{\beta_{2h}} are the autoregressive parameters, \eqn{\gamma} is the non-linear coefficient associated with the intercept drift, and \eqn{\delta_{l}} are the coefficients assocciated with the covariates \eqn{Z_{i,l}}. The coefficient \eqn{d} is considered as an extra parameter defining the lag of the network effect in the non-linear part of the model and is left to be set by the user. For details on ID-PNAR models see Armillotta and Fokianos (2024, Sec. 2).
 }
 
 \value{
@@ -101,11 +101,11 @@ over \eqn{TT}.
 }
 
 \references{
-Armillotta, M. and K. Fokianos (2024a). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
+Armillotta, M. and K. Fokianos (2024). Count network autoregression. \emph{Journal of Time Series Analysis}, 45(4): 584--612.
 
 Armillotta, M. and K. Fokianos (2023). Nonlinear network autoregression. \emph{Annals of Statistics}, 51(6): 2526--2552.
 
-Armillotta, M., Tsagris, M. and Fokianos, K. (2024b). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
+Armillotta, M., Tsagris, M. and Fokianos, K. (2024). Inference for Network Count Time Series with the R Package PNAR. \emph{The R Journal}, 15/4: 255--269.
 }
 
 \author{
