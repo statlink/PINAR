@@ -2,7 +2,7 @@ Package: PNAR
 Type: Package
 Title: Poisson Network Autoregressive Models
 Version: 1.7
-Date: 2023-09-05
+Date: 2024-09-05
 Authors@R: c(
            person( "Michail", "Tsagris", role = c("aut", "cre"), email = "mtsagris@uoc.gr" ),
            person( "Mirko", "Armillotta", role = c("aut", "cph"), email = "m.armillotta@vu.nl" ),
