@@ -3,9 +3,9 @@
     "path": "~/GitHub/PNAR/man/global_optimise_LM_tnarpq.Rd",
     "project_path": "man/global_optimise_LM_tnarpq.Rd",
     "type": "r_doc",
-    "hash": "0",
+    "hash": "2569154133",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1725508853821.0,
     "source_on_save": false,
     "relative_order": 2,
@@ -16,11 +16,11 @@
         "scrollLine": "53"
     },
     "folds": "",
-    "lastKnownWriteTime": 1725508881,
+    "lastKnownWriteTime": 1725509113,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1725509004059,
+    "last_content_update": 1725509113746,
     "read_only": false,
     "read_only_alternatives": []
 }
