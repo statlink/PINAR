@@ -61,8 +61,7 @@ The function optimizes the quasi score test statistic, under the null assumption
 for testing linearity of Poisson Network Autoregressive model of order \eqn{p} against the following T-PNAR(\eqn{p}) model, with respect to the unknown nuisance parameter (\eqn{\gamma}). For each node of the network \eqn{i=1,...,N} over
 the time sample \eqn{t=1,...,TT}
 \deqn{
-\lambda_{i,t}=\beta_{0}+\sum_{h=1}^{p}\left[\beta_{1h}X_{i,t-h}+\beta_{2h}Y_{i,t-h}+(\alpha_{0}+\alpha_{1h}X_{i,t-h} +\alpha_{2h}Y_{i,t-h})I(X_{i,t-d}\leq\gamma)\right]+ \\
-\sum_{l=1}^{q}\delta_{l}Z_{i,l}
+\lambda_{i,t}=\beta_{0}+\sum_{h=1}^{p}\left[\beta_{1h}X_{i,t-h}+\beta_{2h}Y_{i,t-h}+(\alpha_{0}+\alpha_{1h}X_{i,t-h} +\alpha_{2h}Y_{i,t-h})I(X_{i,t-d}\leq\gamma)\right]+ \sum_{l=1}^{q}\delta_{l}Z_{i,l}
 }
 where \eqn{X_{i,t}=\sum_{j=1}^{N} W_{ij}Y_{j,t}} is the network effect, i.e. the weighted average impact of node \eqn{i} connections, with the weights of the mean being \eqn{W_{ij}}, the single element of the network matrix \eqn{W}, and \eqn{I()} is the indicator function. The sequence \eqn{\lambda_{i,t}} is the expectation of \eqn{Y_{i,t}}, conditional to its past values.
 
